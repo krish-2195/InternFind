@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Recommendations - InternFind</title>
     <link rel="stylesheet" href="styles.css">
-    <script>console.log("Updated version loaded - " + new Date());</script>
 </head>
 <body>
     <div class="container">
@@ -999,13 +998,6 @@
                     card.classList.add('animate-in');
                 }, index * 100);
             });
-                
-                // Add a status indicator to show data source
-                const statusDiv = document.createElement('div');
-                statusDiv.className = 'data-source-indicator';
-                statusDiv.style.cssText = 'margin: 20px 0; padding: 10px; background: #e8f5e9; border-radius: 4px; text-align: center;';
-                statusDiv.textContent = 'Data loaded successfully from internship.json file';
-                grid.insertAdjacentElement('afterend', statusDiv);
                 
             } catch (error) {
                 log("Error rendering recommendations:", error);
