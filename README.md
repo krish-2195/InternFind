@@ -114,23 +114,45 @@ internfind/
 **InternFind** is available for licensing and commercial partnerships. 
 
 For business inquiries, licensing opportunities, or custom implementations:
-- 📧 Email: [Your Email]
-- 💼 LinkedIn: [Your LinkedIn Profile]
-- 🌐 Portfolio: [Your Portfolio Website]
+- 📧 **Project Lead**: Krish Patel - [Project Lead Email]
+- 📧 **Technical Lead**: Karan Patel - [Your Email]
+- 💼 **LinkedIn**: [Team LinkedIn Profiles]
+- 🌐 **Portfolio**: [Team Portfolio Website]
+- 👥 **Team**: Available for collaborative projects and partnerships
 
 ## 📄 License
 
-This project is proprietary software owned by Karan Patel. See the [LICENSE](LICENSE) file for details.
+This project is proprietary software owned by the InternFind Development Team. See the [LICENSE](LICENSE) file for details.
 
-**Note**: This repository is shared for portfolio demonstration purposes. All code, concepts, and implementations are protected intellectual property.
+**Note**: This repository is shared for portfolio demonstration purposes. All code, concepts, and implementations are protected intellectual property of the development team.
 
-## 👨‍💻 Author
+## 👨‍💻 Development Team
 
-**Karan Patel**
-- Portfolio: [Your Portfolio URL]
-- LinkedIn: [Your LinkedIn Profile]
-- Email: [Your Email Address]
+**InternFind** was collaboratively developed by a talented team of 6 developers:
 
----
+### 🚀 **Project Leadership**
+- **Krish Patel** - *Project Lead & Backend Developer*
+  - Role: Project architecture, team coordination, AI recommendation engine
 
-💰 **Interested in licensing InternFind for your organization? Get in touch!**
+### 💻 **Frontend Development**  
+- **Dhruv Patel** - *Frontend Developer*
+  - Specialization: React components, user interface implementation
+
+### 🎨 **UI/UX Design**
+- **Priya Kumari** - *UI/UX Designer*
+  - Focus: User experience design, interface prototyping
+- **Aenjal Patel** - *UI/UX Designer* 
+  - Focus: Visual design, user research, design systems
+
+### ⚙️ **Backend Development**
+- **Raj Singh** - *Backend Developer*
+  - Specialization: Server architecture, database optimization
+
+### 🔧 **Full-Stack Development**
+- **Karan Patel** - *Full-Stack Developer*
+  - GitHub: [@KaranPatel001](https://github.com/KaranPatel001)
+  - Specialization: System integration, deployment, DevOps
+
+## 🤝 Business Inquiries
+
+**InternFind** is available for licensing and commercial partnerships.

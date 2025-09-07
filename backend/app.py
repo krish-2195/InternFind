@@ -422,18 +422,23 @@ def list_json_files():
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
-# Serve frontend files from frontend folder
-@app.route('/')
-def serve_frontend():
-    return send_from_directory('../frontend', 'index.html')
+# Serve React app's static files
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react_app(path):
+    if path != "" and os.path.exists(os.path.join('../dist', path)):
+        return send_from_directory('../dist', path)
+    else:
+        return send_from_directory('../dist', 'index.html')
 
+# Legacy routes for HTML files (fallback)
 @app.route('/style.css')
 def serve_css():
-    return send_from_directory('../frontend', 'style.css')
+    return send_from_directory('../', 'styles.css')
 
-@app.route('/script.js')
+@app.route('/script.js')  
 def serve_js():
-    return send_from_directory('../frontend', 'script.js')
+    return send_from_directory('../', 'script.js')
 
 if __name__ == '__main__':
     print("🚀 Starting InternFind AI Recommendation Engine...")
