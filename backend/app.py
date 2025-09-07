@@ -451,6 +451,23 @@ def serve_static_files(path):
 def serve_legacy_css():
     return send_from_directory('..', 'styles.css')
 
+# Specific routes for HTML pages to fix 404 errors
+@app.route('/candidate-profile.html')
+def serve_candidate_profile():
+    return send_from_directory('..', 'candidate-profile.html')
+
+@app.route('/internship-recommendations.html')
+def serve_internship_recommendations():
+    return send_from_directory('..', 'internship-recommendations.html')
+
+@app.route('/internship-detail.html')
+def serve_internship_detail():
+    return send_from_directory('..', 'internship-detail.html')
+
+@app.route('/test-profile.html')
+def serve_test_profile():
+    return send_from_directory('..', 'test-profile.html')
+
 if __name__ == '__main__':
     print("🚀 Starting InternFind AI Recommendation Engine...")
     print("📁 Looking for internship.json in backend directory")
