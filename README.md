@@ -10,6 +10,8 @@
 
 **🚀 [Visit InternFind Live](https://internfind.onrender.com)**
 
+> **⚠️ Note**: This demo is hosted on Render's free tier. If the site appears to be loading slowly, please wait 30-60 seconds as the server may be waking up from sleep mode.
+
 Experience the full AI-powered internship recommendation platform in action!
 
 **InternFind** is a modern, full-stack web application that provides AI-powered internship recommendations based on candidate skills, experience, and preferences. Built with React, TypeScript, Python Flask, and Tailwind CSS.
