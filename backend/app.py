@@ -3,7 +3,8 @@ from flask_cors import CORS
 import json
 import os
 
-app = Flask(__name__)
+# Create Flask app with proper static file configuration
+app = Flask(__name__, static_folder='../dist', static_url_path='')
 # Set up CORS to allow requests from any origin
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
@@ -422,23 +423,33 @@ def list_json_files():
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
-# Serve React app's static files
-@app.route('/', defaults={'path': ''})
+# Serve React app and static files
+@app.route('/')
+def serve_index():
+    return send_from_directory('../dist', 'index.html')
+
 @app.route('/<path:path>')
-def serve_react_app(path):
-    if path != "" and os.path.exists(os.path.join('../dist', path)):
+def serve_static_files(path):
+    # Handle assets (CSS, JS, images)
+    if path.startswith('assets/'):
         return send_from_directory('../dist', path)
+    # Handle other static files
+    elif os.path.exists(os.path.join('../dist', path)):
+        return send_from_directory('../dist', path)
+    # Handle individual HTML pages
+    elif path.endswith('.html') and os.path.exists(os.path.join('..', path)):
+        return send_from_directory('..', path)
+    # Handle legacy CSS
+    elif path == 'styles.css':
+        return send_from_directory('..', 'styles.css')
+    # Default to React app for SPA routing
     else:
         return send_from_directory('../dist', 'index.html')
 
-# Legacy routes for HTML files (fallback)
-@app.route('/style.css')
-def serve_css():
-    return send_from_directory('../', 'styles.css')
-
-@app.route('/script.js')  
-def serve_js():
-    return send_from_directory('../', 'script.js')
+# Direct route for legacy CSS to ensure it loads
+@app.route('/styles.css')
+def serve_legacy_css():
+    return send_from_directory('..', 'styles.css')
 
 if __name__ == '__main__':
     print("🚀 Starting InternFind AI Recommendation Engine...")
