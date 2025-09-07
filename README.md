@@ -114,8 +114,8 @@ internfind/
 **InternFind** is available for licensing and commercial partnerships. 
 
 For business inquiries, licensing opportunities, or custom implementations:
-- 📧 **Project Lead**: Krish Patel - [Project Lead Email]
-- 📧 **Technical Lead**: Karan Patel - [Your Email]
+- 📧 **Project Lead**: Krish Patel - [krishvp27@gmail.com]
+- 📧 **Technical Lead**: Karan Patel - [karanhpatel167@gmail.com]
 - 💼 **LinkedIn**: [Team LinkedIn Profiles]
 - 🌐 **Portfolio**: [Team Portfolio Website]
 - 👥 **Team**: Available for collaborative projects and partnerships
