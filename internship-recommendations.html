@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Recommendations - InternFind</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>console.log("Updated version loaded - " + new Date());</script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-3d">
+                    <span class="logo-text">PM Internship</span>
+                    <span class="logo-subtext">AI Powered</span>
+                </div>
+            </div>
+            <nav class="nav">
+                <a href="candidate-profile.html" class="nav-link">← Back to Profile</a>
+                <a href="index.html" class="nav-link">Home</a>
+            </nav>
+        </header>
+
+        <!-- Progress Indicator -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-step completed">
+                    <div class="step-number">✓</div>
+                    <span>Profile</span>
+                </div>
+                <div class="progress-line completed"></div>
+                <div class="progress-step active">
+                    <div class="step-number">2</div>
+                    <span>Recommendations</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step">
+                    <div class="step-number">3</div>
+                    <span>Details</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Welcome Message -->
+        <section class="welcome-section">
+            <div class="welcome-content">
+                <h1 class="welcome-title">Perfect Matches Found!</h1>
+                <p class="welcome-subtitle">Based on your profile, our AI has found <span class="highlight">5 internships</span> that are ideal for you</p>
+                <div class="match-indicator">
+                    <div class="match-score">
+                        <div class="score-circle">
+                            <div class="score-value">95%</div>
+                            <div class="score-label">Match</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommendations -->
+        <section class="recommendations-section">
+            <div class="recommendations-container">
+                <div class="recommendations-grid" id="recommendationsGrid">
+                    <!-- Recommendations will be dynamically inserted here -->
+                </div>
+                
+                <div class="recommendations-footer">
+                    <button class="secondary-button" onclick="goBack()">
+                        <span>← Update Profile</span>
+                    </button>
+                    <button class="info-button" onclick="showFilterOptions()">
+                        <span>🔍 Refine Results</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter Modal -->
+        <div id="filterModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Refine Your Search</h3>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="filter-group">
+                        <label class="filter-label">Duration</label>
+                        <div class="filter-options">
+                            <label class="filter-option">
+                                <input type="checkbox" value="3-months">
+                                <span>3 Months</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="6-months">
+                                <span>6 Months</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="12-months">
+                                <span>12 Months</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Stipend Range</label>
+                        <div class="filter-options">
+                            <label class="filter-option">
+                                <input type="checkbox" value="0-5000">
+                                <span>₹0 - ₹5,000</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="5000-15000">
+                                <span>₹5,000 - ₹15,000</span>
+                            </label>
+                            <label class="filter-option">
+                                <input type="checkbox" value="15000+">
+                                <span>₹15,000+</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="secondary-button" onclick="closeModal()">Cancel</button>
+                    <button class="cta-button" onclick="applyFilters()">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            // Check profile on load
+            if (typeof checkProfile === 'function') {
+                checkProfile();
+            }
+        });
+        
+        // Function to check profile data
+        function checkProfile() {
+            const profileData = localStorage.getItem('candidateProfile');
+            const matchedData = localStorage.getItem('matchedInternships');
+            
+            let html = '<h4>Profile Data:</h4>';
+            if (profileData) {
+                try {
+                    const profile = JSON.parse(profileData);
+                    html += `<pre>${JSON.stringify(profile, null, 2)}</pre>`;
+                } catch (e) {
+                    html += `<p>Error parsing profile: ${e.message}</p>`;
+                }
+            } else {
+                html += '<p>No profile data found in localStorage</p>';
+            }
+            
+            html += '<h4>Matched Internships:</h4>';
+            if (matchedData) {
+                try {
+                    const matched = JSON.parse(matchedData);
+                    html += `<p>Found ${matched.length} matched internships</p>`;
+                    html += `<pre>${JSON.stringify(matched[0], null, 2)}</pre>`;
+                } catch (e) {
+                    html += `<p>Error parsing matched data: ${e.message}</p>`;
+                }
+            } else {
+                html += '<p>No matched internships found in localStorage</p>';
+            }
+            
+            document.getElementById('profileData').innerHTML = html;
+        }
+        
+        // Simple console logging
+        function log(message, data) {
+            console.log(`[INFO] ${message}`, data || '');
+        }
+        
+        function logError(message, error) {
+            console.error(`[ERROR] ${message}`, error || '');
+        }
+    
+        // API endpoint
+        const API_URL = "http://localhost:5000";
+        log('API URL set to', API_URL);
+        
+        // Function to fetch recommendations from API with direct file access as backup
+        async function fetchRecommendations() {
+            log('Starting recommendation fetch process');
+
+            // Always build from API or JSON file to ensure data matches backend/internship.json
+            // Try backend recommend API first (honors filters)
+            try {
+                log('Attempting to fetch recommendations from API /api/recommend');
+
+                // Build profile
+                let profile;
+                try {
+                    const profileData = localStorage.getItem('candidateProfile');
+                    if (profileData) {
+                        profile = JSON.parse(profileData);
+                        log("Using profile for API recommend", profile);
+                    }
+                } catch (e) {
+                    logError("Failed to parse profile data for API recommend", e);
+                }
+                if (!profile) {
+                    profile = {
+                        education: "graduate",
+                        skills: ["programming", "communication", "english"],
+                        interests: ["technology", "marketing"],
+                        state: "any",
+                        workMode: "Remote"
+                    };
+                }
+
+                // Get filters selected by user (if any) from localStorage
+                let selectedFilters = {};
+                try {
+                    const stored = localStorage.getItem('selectedFilters');
+                    if (stored) selectedFilters = JSON.parse(stored);
+                } catch {}
+
+                // Normalize duration values like '6-months' -> '6 months'
+                const normalizedDuration = Array.isArray(selectedFilters.duration)
+                    ? selectedFilters.duration.map(d => String(d).replace('-', ' ').trim())
+                    : [];
+                const stipendFilters = Array.isArray(selectedFilters.stipend) ? selectedFilters.stipend : [];
+
+                const requestBody = {
+                    education: profile.education || 'graduate',
+                    skills: Array.isArray(profile.skills) ? profile.skills : [],
+                    interests: Array.isArray(profile.interests) ? profile.interests : [],
+                    location_state: profile.state || 'any',
+                    filters: {
+                        duration: normalizedDuration,
+                        stipend: stipendFilters
+                    }
+                };
+
+                const response = await fetch(`${API_URL}/api/recommend`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) throw new Error(`Recommend API failed: ${response.status}`);
+                const data = await response.json();
+                if (data && data.success && Array.isArray(data.recommendations) && data.recommendations.length > 0) {
+                    log(`API returned ${data.recommendations.length} recommendations`);
+                    const mapped = data.recommendations.map(item => {
+                        const it = item.internship || {};
+                        const score = typeof item.score === 'number' ? item.score : 80;
+                        return {
+                            id: it.id || Math.floor(Math.random() * 1000),
+                            title: it.title || 'Untitled Position',
+                            company: it.company || 'Unknown Company',
+                            location: it.location_city ? `${it.location_city}, ${it.location_state}` : (it.location_state || 'Remote'),
+                            duration: it.duration || 'Flexible',
+                            stipend: `₹${it.stipend ? Number(it.stipend).toLocaleString() : '0'}/month`,
+                            type: it.company_type || 'Private',
+                            match: Math.max(0, Math.min(100, score)),
+                            description: it.description || 'No description available',
+                            requirements: Array.isArray(it.required_skills) ? it.required_skills : (it.required_skills ? [it.required_skills] : ['Not specified']),
+                            remote: it.location_type === 'Remote',
+                            category: it.category,
+                            sector: it.sector
+                        };
+                    });
+                    return mapped;
+                } else {
+                    log('API returned no recommendations, falling back to local file');
+                }
+            } catch (apiRecErr) {
+                logError('API /api/recommend failed', apiRecErr);
+            }
+            
+            try {
+                // No pre-matched internships found, fetch directly from JSON file
+                log('Fetching internship data directly from file');
+                const dp = document.getElementById('debugPanel');
+                if (dp) {
+                    dp.innerHTML += `<div>[${new Date().toLocaleTimeString()}] Fetching internship data directly from file</div>`;
+                }
+                // Fetch from the backend directory
+                const response = await fetch('./backend/internship.json');
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load internship.json: ${response.status}`);
+                }
+                
+                const jsonData = await response.json();
+                log(`Successfully loaded ${jsonData.length} internships from file`);
+
+                
+                // Get profile data
+                let profile;
+                try {
+                    const profileData = localStorage.getItem('candidateProfile');
+                    if (profileData) {
+                        profile = JSON.parse(profileData);
+                        log("Using profile for filtering internships", profile);
+                    } else {
+                        log("No profile found in localStorage");
+                    }
+                } catch (e) {
+                    logError("Failed to parse profile data for filtering", e);
+                }
+                
+                // Default profile if not found
+                if (!profile) {
+                    profile = {
+                        fullName: "Test User",
+                        email: "test@example.com",
+                        education: "graduate",
+                        skills: ["programming", "communication", "english"],
+                        interests: ["technology", "marketing"],
+                        state: "maharashtra"
+                    };
+                }
+                
+                // Filter and calculate match scores based on profile
+                const internshipsWithScores = jsonData
+                    .filter(internship => {
+                        // Consider internships with matching location or remote positions
+                        const locationMatch = 
+                            profile.state === 'any' || 
+                            !profile.state || 
+                            internship.location_state === profile.state || 
+                            internship.location_type === profile.workMode ||
+                            internship.location_state === 'any';
+                            
+                        // Consider internships with matching sectors/categories based on user's interests
+                        let interestMatch = false;
+                        if (profile.interests && profile.interests.length > 0) {
+                            interestMatch = profile.interests.some(interest => 
+                                internship.category === interest || 
+                                (internship.sector && internship.sector.toLowerCase().includes(interest.toLowerCase()))
+                            );
+                        } else {
+                            interestMatch = true; // No interests specified means all are valid
+                        }
+                        
+                        // Debug logging for filtering decisions
+                        if (Math.random() < 0.1) { // Log only 10% of decisions to avoid spam
+                            log(`Filtering decision for ${internship.id}: ${internship.title}`, {
+                                locationMatch,
+                                userLocation: profile.state,
+                                internshipLocation: internship.location_state,
+                                interestMatch,
+                                userInterests: profile.interests,
+                                internshipCategory: internship.category,
+                                internshipSector: internship.sector,
+                                includeInternship: locationMatch && interestMatch
+                            });
+                        }
+                        
+                        return locationMatch && interestMatch;
+                    })
+                    .map(internship => {
+                        // Calculate match score based on several factors
+                        let baseScore = 70; // Base score
+                        
+                        // Location match bonus
+                        if (internship.location_state === profile.state) {
+                            baseScore += 10;
+                        }
+                        
+                        // Interest/category match bonus
+                        if (profile.interests && profile.interests.length > 0) {
+                            profile.interests.forEach(interest => {
+                                if (internship.category === interest || 
+                                    internship.sector?.toLowerCase().includes(interest.toLowerCase())) {
+                                    baseScore += 5;
+                                }
+                            });
+                        }
+                        
+                        // Skills match bonus - using the skills array directly from the profile form
+                        if (profile.skills && internship.required_skills) {
+                            const matchingSkills = profile.skills.filter(skill => 
+                                internship.required_skills.includes(skill)
+                            );
+                            // Weighted bonus: more matching skills = higher score
+                            baseScore += matchingSkills.length * 3;
+                            
+                            // Additional bonus if all required skills are matched
+                            if (matchingSkills.length >= internship.required_skills.length) {
+                                baseScore += 5;
+                            }
+                        }
+                        
+                        // Work mode preference bonus
+                        if (profile.workMode === internship.location_type) {
+                            baseScore += 5;
+                        }
+                        
+                        // Limit score to maximum of 95
+                        const matchScore = Math.min(95, baseScore);
+                        
+                        return {
+                            id: internship.id || Math.floor(Math.random() * 1000),
+                            title: internship.title || "Untitled Position",
+                            company: internship.company || "Unknown Company",
+                            location: internship.location_city ? 
+                                `${internship.location_city}, ${internship.location_state}` : 
+                                (internship.location_state || "Remote"),
+                            duration: internship.duration || "Flexible",
+                            stipend: `₹${internship.stipend ? internship.stipend.toLocaleString() : '0'}/month`,
+                            type: internship.company_type || "Private",
+                            match: matchScore,
+                            description: internship.description || "No description available",
+                            requirements: Array.isArray(internship.required_skills) ? 
+                                internship.required_skills : 
+                                (typeof internship.required_skills === 'string' ? 
+                                    [internship.required_skills] : ["Not specified"]),
+                            remote: internship.location_type === 'Remote' || false,
+                            category: internship.category,
+                            sector: internship.sector
+                        };
+                    });
+                
+                // Sort by match score (highest first) and limit to top 5
+                return internshipsWithScores
+                    .sort((a, b) => b.match - a.match)
+                    .slice(0, 5);
+            } catch (fileError) {
+                logError('Error loading from internship.json file:', fileError);
+                
+                // Try the API instead
+                try {
+                    log("Trying API as fallback");
+                    const response = await fetch(`${API_URL}/api/test-json`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`API returned status ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    log("API response received", data);
+                    
+                    if (data.success && data.internships && data.internships.length > 0) {
+                        // Get profile data for filtering
+                        let profile;
+                        try {
+                            const profileData = localStorage.getItem('candidateProfile');
+                            if (profileData) {
+                                profile = JSON.parse(profileData);
+                                log("Using profile for filtering API internships", profile);
+                            }
+                        } catch (e) {
+                            logError("Failed to parse profile data for filtering API results", e);
+                        }
+                        
+                        // Default profile if not found
+                        if (!profile) {
+                            profile = {
+                                fullName: "Test User",
+                                email: "test@example.com",
+                                education: "graduate",
+                                skills: ["programming", "communication", "english"],
+                                interests: ["technology", "marketing"],
+                                state: "maharashtra"
+                            };
+                        }
+                        
+                        // Process profile data to ensure correct format
+                        // Skills should already be an array from the form
+                        if (!Array.isArray(profile.skills)) {
+                            profile.skills = profile.skills ? [profile.skills] : [];
+                        }
+                        
+                        // Ensure interests is an array
+                        if (!Array.isArray(profile.interests)) {
+                            profile.interests = profile.interests ? [profile.interests] : [];
+                        }
+                        
+                        // Make sure work mode is set
+                        if (!profile.workMode) {
+                            profile.workMode = "Remote";
+                        }
+                        
+                        // Handle any state value formatting issues
+                        if (!profile.state) {
+                            profile.state = "any";
+                        }
+                        
+                        log("Using processed profile for API data filtering", profile);
+                        
+                        // Filter and calculate match scores based on profile
+                        const withScores = data.internships
+                            .filter(internship => {
+                                // Consider internships with matching location or remote positions
+                                const locationMatch = 
+                                    profile.state === 'any' ||
+                                    !profile.state || 
+                                    internship.location_state === profile.state || 
+                                    internship.location_type === profile.workMode ||
+                                    internship.location_state === 'any';
+                                
+                                // Consider internships with matching sectors/categories based on user's interests
+                                let interestMatch = false;
+                                if (profile.interests && profile.interests.length > 0) {
+                                    interestMatch = profile.interests.some(interest => 
+                                        internship.category === interest || 
+                                        internship.sector?.toLowerCase().includes(interest.toLowerCase())
+                                    );
+                                } else {
+                                    interestMatch = true; // No interests specified means all are valid
+                                }
+                                
+                                return locationMatch && interestMatch;
+                            })
+                            .map(internship => {
+                                // Calculate match score based on several factors
+                                let baseScore = 70; // Base score
+                                
+                                // Location match bonus
+                                if (internship.location_state === profile.state) {
+                                    baseScore += 10;
+                                }
+                                
+                                // Interest/category match bonus
+                                if (profile.interests && profile.interests.length > 0) {
+                                    profile.interests.forEach(interest => {
+                                        if (internship.category === interest || 
+                                            internship.sector?.toLowerCase().includes(interest.toLowerCase())) {
+                                            baseScore += 5;
+                                        }
+                                    });
+                                }
+                                
+                                // Skills match bonus
+                                if (profile.skills && internship.required_skills) {
+                                    const matchingSkills = profile.skills.filter(skill => 
+                                        internship.required_skills.includes(skill)
+                                    );
+                                    // Weighted bonus: more matching skills = higher score
+                                    baseScore += matchingSkills.length * 3;
+                                    
+                                    // Additional bonus if all required skills are matched
+                                    if (matchingSkills.length >= internship.required_skills.length) {
+                                        baseScore += 5;
+                                    }
+                                }
+                                
+                                // Work mode preference bonus
+                                if (profile.workMode === internship.location_type) {
+                                    baseScore += 5;
+                                }
+                                
+                                // Limit score to maximum of 95
+                                const matchScore = Math.min(95, baseScore);
+                                
+                                return {
+                                    id: internship.id || Math.floor(Math.random() * 1000),
+                                    title: internship.title || "Untitled Position",
+                                    company: internship.company || "Unknown Company",
+                                    location: internship.location_city ? 
+                                        `${internship.location_city}, ${internship.location_state}` : 
+                                        (internship.location_state || "Remote"),
+                                    duration: internship.duration || "Flexible",
+                                    stipend: `₹${internship.stipend ? internship.stipend.toLocaleString() : '0'}/month`,
+                                    type: internship.company_type || "Private",
+                                    match: matchScore,
+                                    description: internship.description || "No description available",
+                                    requirements: Array.isArray(internship.required_skills) ? 
+                                        internship.required_skills : 
+                                        (typeof internship.required_skills === 'string' ? 
+                                            [internship.required_skills] : ["Not specified"]),
+                                    remote: internship.location_type === 'Remote' || false,
+                                    category: internship.category,
+                                    sector: internship.sector
+                                };
+                            });
+                        
+                        // Sort by match score (highest first) and limit to top 5
+                        return withScores
+                            .sort((a, b) => b.match - a.match)
+                            .slice(0, 5);
+                    }
+                } catch (apiError) {
+                    logError("API fallback failed", apiError);
+                }
+                
+                // If both approaches fail, use hardcoded fallback data
+                return useFallbackData();
+            }
+        }
+        
+        // Fallback data if all other methods fail
+        function useFallbackData() {
+            log("Using hardcoded internship data as last resort");
+            
+            // Display a notice that we're using fallback data
+            const grid = document.getElementById('recommendationsGrid');
+            if (grid && !document.querySelector('.api-error-message')) {
+                const statusDiv = document.createElement('div');
+                statusDiv.className = 'api-error-message';
+                statusDiv.style.cssText = 'padding: 10px; margin-bottom: 20px; background: #fff8e1; border-left: 4px solid #ffc107; color: #666;';
+                statusDiv.textContent = 'Using backup internship data (Could not access internship.json)';
+                
+                if (grid.innerHTML.includes('loading-indicator')) {
+                    grid.innerHTML = '';
+                }
+                grid.insertAdjacentElement('afterbegin', statusDiv);
+            }
+            
+            // Get profile data for filtering
+            let profile;
+            try {
+                const profileData = localStorage.getItem('candidateProfile');
+                if (profileData) {
+                    profile = JSON.parse(profileData);
+                    log("Using profile for fallback data filtering", profile);
+                }
+            } catch (e) {
+                logError("Failed to parse profile data for fallback filtering", e);
+            }
+            
+            // Default profile if not found
+            if (!profile) {
+                profile = {
+                    fullName: "Test User",
+                    email: "test@example.com",
+                    education: "graduate",
+                    skills: ["computer", "english", "programming"],
+                    interests: ["technology", "marketing"],
+                    state: "maharashtra",
+                    workMode: "Remote"
+                };
+            }
+            
+            // Process profile data to ensure correct format
+            // Skills should already be an array from the form
+            if (!Array.isArray(profile.skills)) {
+                profile.skills = profile.skills ? [profile.skills] : [];
+            }
+            
+            // Ensure interests is an array
+            if (!Array.isArray(profile.interests)) {
+                profile.interests = profile.interests ? [profile.interests] : [];
+            }
+            
+            // Make sure work mode is set
+            if (!profile.workMode) {
+                profile.workMode = "Remote";
+            }
+            
+            // Handle any state value formatting issues
+            if (!profile.state) {
+                profile.state = "any";
+            }
+            
+            log("Using processed profile for fallback data filtering", profile);
+            
+            // Emergency fallback data in case we can't load from the file or API
+            // These internships include various categories and locations
+            const allFallbackInternships = [
+                {
+                    id: 1,
+                    title: "Software Development Intern",
+                    company: "Tata Consultancy Services",
+                    location: "Mumbai, Maharashtra",
+                    duration: "6 months",
+                    stipend: "₹25,000/month",
+                    type: "Private",
+                    match: 95,
+                    description: "Develop web applications using modern frameworks and contribute to enterprise solutions",
+                    requirements: ["Programming", "Computer skills"],
+                    remote: true,
+                    category: "technology",
+                    sector: "Information Technology",
+                    location_state: "maharashtra",
+                    location_city: "mumbai"
+                },
+                {
+                    id: 2,
+                    title: "Digital Marketing Intern",
+                    company: "Flipkart",
+                    location: "Bangalore, Karnataka",
+                    duration: "4 months",
+                    stipend: "₹22,000/month",
+                    type: "Private",
+                    match: 92,
+                    description: "Create digital campaigns, analyze social media metrics, and support e-commerce marketing",
+                    requirements: ["Computer skills", "English"],
+                    remote: false,
+                    category: "marketing",
+                    sector: "E-commerce",
+                    location_state: "karnataka",
+                    location_city: "bangalore"
+                },
+                {
+                    id: 3,
+                    title: "Manufacturing Process Intern",
+                    company: "Bharat Heavy Electricals Limited",
+                    location: "Kolkata, West Bengal",
+                    duration: "5 months",
+                    stipend: "₹20,000/month",
+                    type: "PSU",
+                    match: 88,
+                    description: "Learn industrial manufacturing processes and quality control in heavy machinery production",
+                    requirements: ["Teamwork", "Engineering skills"],
+                    remote: false,
+                    category: "manufacturing",
+                    sector: "Heavy Engineering",
+                    location_state: "west_bengal",
+                    location_city: "kolkata"
+                },
+                {
+                    id: 4,
+                    title: "Healthcare Data Assistant",
+                    company: "Apollo Hospitals",
+                    location: "Chennai, Tamil Nadu",
+                    duration: "3 months",
+                    stipend: "₹15,000/month",
+                    type: "Private",
+                    match: 85,
+                    description: "Manage patient records, assist in health data analysis and support medical research",
+                    requirements: ["English", "Computer skills"],
+                    remote: false,
+                    category: "healthcare",
+                    sector: "Healthcare Services",
+                    location_state: "tamil_nadu",
+                    location_city: "chennai"
+                },
+                {
+                    id: 5,
+                    title: "Banking Operations Intern",
+                    company: "State Bank of India",
+                    location: "Lucknow, Uttar Pradesh",
+                    duration: "4 months",
+                    stipend: "₹18,000/month",
+                    type: "PSU",
+                    match: 82,
+                    description: "Support banking operations, customer service, and learn financial processes",
+                    requirements: ["English", "Mathematics"],
+                    remote: false,
+                    category: "finance",
+                    sector: "Banking & Finance",
+                    location_state: "uttar_pradesh",
+                    location_city: "lucknow"
+                },
+                {
+                    id: 6,
+                    title: "Content Writing Intern",
+                    company: "Times Internet",
+                    location: "Remote",
+                    duration: "3 months",
+                    stipend: "₹16,000/month",
+                    type: "Private",
+                    match: 87,
+                    description: "Write articles, create blog content, and support digital publishing",
+                    requirements: ["English", "Communication", "Writing"],
+                    remote: true,
+                    category: "media",
+                    sector: "Media & Publishing",
+                    location_state: "any",
+                    location_city: "remote"
+                },
+                {
+                    id: 7,
+                    title: "Social Media Intern",
+                    company: "Zomato",
+                    location: "New Delhi, Delhi",
+                    duration: "3 months",
+                    stipend: "₹18,000/month",
+                    type: "Private",
+                    match: 89,
+                    description: "Create social media content, engage with users, and support brand marketing",
+                    requirements: ["Marketing", "Design", "Communication"],
+                    remote: false,
+                    category: "marketing",
+                    sector: "Food Tech",
+                    location_state: "delhi",
+                    location_city: "new_delhi"
+                },
+                {
+                    id: 8,
+                    title: "Research and Development Intern",
+                    company: "CSIR",
+                    location: "Pune, Maharashtra",
+                    duration: "6 months",
+                    stipend: "₹17,000/month",
+                    type: "Government",
+                    match: 84,
+                    description: "Conduct scientific research, maintain lab equipment, and support innovation projects",
+                    requirements: ["Research", "Technical", "Computer"],
+                    remote: false,
+                    category: "research",
+                    sector: "Science & Technology",
+                    location_state: "maharashtra",
+                    location_city: "pune"
+                }
+            ];
+            
+            // Filter internships based on user preferences
+            const filteredInternships = allFallbackInternships.filter(internship => {
+                // Consider internships with matching location or remote positions
+                const locationMatch = 
+                    profile.state === 'any' ||
+                    !profile.state || 
+                    internship.location_state === profile.state || 
+                    internship.remote === true || 
+                    (profile.workMode && internship.location_type === profile.workMode) ||
+                    internship.location_state === 'any';
+                
+                // Consider internships with matching sectors/categories based on user's interests
+                let interestMatch = false;
+                if (profile.interests && profile.interests.length > 0) {
+                    interestMatch = profile.interests.some(interest => 
+                        internship.category === interest || 
+                        internship.sector?.toLowerCase().includes(interest.toLowerCase())
+                    );
+                } else {
+                    interestMatch = true; // No interests specified means all are valid
+                }
+                
+                return locationMatch && interestMatch;
+            });
+            
+            // If we have enough filtered internships, return those
+            if (filteredInternships.length >= 5) {
+                return filteredInternships.slice(0, 5);
+            }
+            
+            // If we don't have enough matches, add some more general ones to fill out the list
+            return allFallbackInternships.slice(0, 5);
+        }
+
+        async function renderRecommendations() {
+            const grid = document.getElementById('recommendationsGrid');
+            
+            try {
+                // Show loading state
+                grid.innerHTML = '<div class="loading-indicator">Fetching your personalized recommendations...</div>';
+                
+                // Get profile data or create a new one if needed
+                let profile;
+                try {
+                    const profileData = localStorage.getItem('candidateProfile');
+                    if (profileData) {
+                        profile = JSON.parse(profileData);
+                        log("Retrieved profile from localStorage", profile);
+                    }
+                } catch (e) {
+                    logError("Failed to parse profile data", e);
+                }
+                
+                // If no valid profile, create a default one
+                if (!profile) {
+                    profile = {
+                        fullName: "Test User",
+                        email: "test@example.com",
+                        education: "graduate",
+                        skills: ["programming", "communication", "english"],
+                        interests: ["technology", "marketing"],
+                        location: "maharashtra"
+                    };
+                    localStorage.setItem('candidateProfile', JSON.stringify(profile));
+                    log("Created new default profile", profile);
+                }
+                
+                // Process profile data to ensure correct format
+                // Check for skills format - the form now uses an array of selected skills
+                if (profile.skills && typeof profile.skills === 'string') {
+                    profile.skills = profile.skills.split(',').map(skill => skill.trim().toLowerCase());
+                } else if (!Array.isArray(profile.skills)) {
+                    profile.skills = [];
+                }
+                
+                // Ensure interests is an array - the form already stores them as an array
+                if (!Array.isArray(profile.interests)) {
+                    profile.interests = profile.interests ? [profile.interests] : [];
+                }
+                
+                // Make sure work mode is set (default to "Remote" if not specified)
+                if (!profile.workMode) {
+                    profile.workMode = "Remote";
+                }
+                
+                // Handle any state value formatting issues
+                if (!profile.state) {
+                    profile.state = "any";
+                }
+                
+                // Log the processed profile information
+                log("Using the following profile for recommendations:", {
+                    name: profile.fullName,
+                    state: profile.state,
+                    interests: profile.interests,
+                    skills: profile.skills
+                });
+                
+                // Update welcome message with candidate name
+                const userName = profile.fullName.split(" ")[0] || "User";
+                document.querySelector('.welcome-title').textContent = `Perfect Matches Found, ${userName}!`;
+                
+                // Get internships from the JSON file
+                const internships = await fetchRecommendations();
+                
+                log("Rendering internships", { count: internships.length });
+                
+                // Clear the grid before adding new content
+                grid.innerHTML = '';
+                
+                // Update welcome message with count
+                document.querySelector('.welcome-subtitle').innerHTML = 
+                    `Based on your profile, our AI has found <span class="highlight">${internships.length} internships</span> that are ideal for you`;
+                
+                // Calculate and update the average match score dynamically
+                if (internships.length > 0) {
+                    const avgMatch = Math.round(internships.reduce((sum, intern) => sum + intern.match, 0) / internships.length);
+                    const scoreElement = document.querySelector('.score-value');
+                    if (scoreElement) {
+                        scoreElement.textContent = `${avgMatch}%`;
+                    }
+                }
+                
+                // No internships found message
+                if (internships.length === 0) {
+                    grid.innerHTML = `
+                        <div class="no-results-message" style="text-align: center; padding: 40px; width: 100%;">
+                            <h3>No matching internships found</h3>
+                            <p>We couldn't find internships that match your selected location and interests. Please try updating your profile with different preferences.</p>
+                            <p style="margin-top: 15px; font-style: italic; color: #666;">Try selecting "Any State" for location or add more interests to see more options.</p>
+                            <button class="secondary-button" style="margin-top: 15px;" onclick="window.location.href='candidate-profile.html'">Update Profile</button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Add debugging info about the match
+                log("Selected internships for display:", internships.map(i => ({
+                    id: i.id,
+                    title: i.title,
+                    match: i.match,
+                    location: i.location,
+                    category: i.category
+                })));
+                
+                grid.innerHTML += internships.map((internship, index) => `
+                <div class="internship-card" style="animation-delay: ${index * 0.1}s" onclick='viewDetails(${JSON.stringify(internship)})'>
+                    <div class="card-header">
+                        <div class="card-badge ${internship.type.toLowerCase()}">${internship.type}</div>
+                        <div class="match-percentage">
+                            <div class="match-circle">
+                                <span class="match-value">${internship.match}%</span>
+                                <div class="match-ring" style="--match: ${internship.match}"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-content">
+                        <h3 class="card-title">${internship.title}</h3>
+                        <div class="card-company">
+                            <span class="company-icon">🏢</span>
+                            ${internship.company}
+                        </div>
+                        
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-icon">📍</span>
+                                <span>${internship.location}</span>
+                                ${internship.remote ? '<span class="remote-badge">Remote Available</span>' : ''}
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-icon">⏰</span>
+                                <span>${internship.duration}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-icon">💰</span>
+                                <span>${internship.stipend}</span>
+                            </div>
+                        </div>
+                        
+                        <p class="card-description">${internship.description}</p>
+                        
+                        <div class="card-requirements">
+                            <div class="requirements-label">Key Requirements:</div>
+                            <div class="requirements-list">
+                                ${internship.requirements.slice(0, 2).map(req => `<span class="requirement-tag">${req}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <button class="view-details-btn">
+                            <span>View Details</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add stagger animation
+            const cards = document.querySelectorAll('.internship-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-in');
+                }, index * 100);
+            });
+                
+                // Add a status indicator to show data source
+                const statusDiv = document.createElement('div');
+                statusDiv.className = 'data-source-indicator';
+                statusDiv.style.cssText = 'margin: 20px 0; padding: 10px; background: #e8f5e9; border-radius: 4px; text-align: center;';
+                statusDiv.textContent = 'Data loaded successfully from internship.json file';
+                grid.insertAdjacentElement('afterend', statusDiv);
+                
+            } catch (error) {
+                log("Error rendering recommendations:", error);
+                grid.innerHTML = `
+                    <div class="error-message">
+                        <h3>Something went wrong</h3>
+                        <p>We couldn't load your personalized recommendations. Please try again later.</p>
+                        <button class="secondary-button" onclick="location.reload()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function viewDetails(internship) {
+            try {
+                // Persist the full internship object for the details page
+                localStorage.setItem('selectedInternshipData', JSON.stringify(internship));
+            } catch (e) {
+                console.error('Failed to store selected internship', e);
+            }
+            window.location.href = 'internship-detail.html';
+        }
+
+        function goBack() {
+            window.location.href = 'candidate-profile.html';
+        }
+
+        function showFilterOptions() {
+            document.getElementById('filterModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('filterModal').classList.remove('active');
+        }
+
+        function applyFilters() {
+            // Collect selected filter options
+            const modal = document.getElementById('filterModal');
+            const duration = Array.from(modal.querySelectorAll('.filter-group input[type="checkbox"][value="3-months"], .filter-group input[type="checkbox"][value="6-months"], .filter-group input[type="checkbox"][value="12-months"]'))
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            const stipend = Array.from(modal.querySelectorAll('.filter-group input[type="checkbox"][value="0-5000"], .filter-group input[type="checkbox"][value="5000-15000"], .filter-group input[type="checkbox"][value="15000+"]'))
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            const selectedFilters = { duration, stipend };
+            localStorage.setItem('selectedFilters', JSON.stringify(selectedFilters));
+            log('Filters saved', selectedFilters);
+
+            closeModal();
+            // Re-render recommendations to reflect new filters (backend will honor them)
+            renderRecommendations();
+        }
+
+        // Debug utility functions
+        function testHealthEndpoint() {
+            debug.log("Testing health endpoint...");
+            fetch(`${API_URL}/api/health`)
+                .then(response => response.json())
+                .then(data => debug.log("Health endpoint response", data))
+                .catch(err => debug.error("Health endpoint error", err));
+        }
+        
+        function testJsonEndpoint() {
+            debug.log("Testing JSON endpoint...");
+            fetch(`${API_URL}/api/test-json`)
+                .then(response => response.json())
+                .then(data => debug.log("JSON endpoint response", data))
+                .catch(err => debug.error("JSON endpoint error", err));
+        }
+        
+        function testRecommendEndpoint() {
+            debug.log("Testing recommend endpoint...");
+            
+            const testData = {
+                education: "graduate",
+                skills: ["programming", "english"],
+                interests: ["technology"],
+                location_state: "maharashtra"
+            };
+            
+            fetch(`${API_URL}/api/recommend`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(testData)
+            })
+                .then(response => response.text())
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text);
+                        debug.log("Recommend endpoint response", data);
+                    } catch (e) {
+                        debug.log("Raw response (not JSON)", text);
+                    }
+                })
+                .catch(err => debug.error("Recommend endpoint error", err));
+        }
+        
+        function clearDebugOutput() {
+            const debugContainer = document.getElementById('debugOutput');
+            if (debugContainer) {
+                debugContainer.innerHTML = '';
+                debug.log("Debug output cleared");
+            }
+        }
+        
+        // Debug functions for consistency with our log/logError functions
+        function log(message, data) {
+            console.log(`[INFO] ${message}`, data || '');
+            // Also add to debug panel if it exists
+            const debugOutput = document.getElementById('debugOutput');
+            if (debugOutput) {
+                const timestamp = new Date().toLocaleTimeString();
+                const entry = document.createElement('div');
+                entry.innerHTML = `<span style="color:#007bff;">[${timestamp}]</span> <b>${message}</b>: ${data ? JSON.stringify(data, null, 2) : ''}`;
+                debugOutput.appendChild(entry);
+                debugOutput.scrollTop = debugOutput.scrollHeight;
+            }
+        }
+        
+        function logError(message, error) {
+            console.error(`[ERROR] ${message}`, error || '');
+            // Also add to debug panel if it exists
+            const debugOutput = document.getElementById('debugOutput');
+            if (debugOutput) {
+                const timestamp = new Date().toLocaleTimeString();
+                const entry = document.createElement('div');
+                entry.style.color = '#dc3545';
+                entry.innerHTML = `<span style="color:#dc3545;">[${timestamp}] ERROR:</span> <b>${message}</b>: ${error ? error.toString() : ''}`;
+                debugOutput.appendChild(entry);
+                debugOutput.scrollTop = debugOutput.scrollHeight;
+            }
+        }
+        
+        // For compatibility with existing code that might use debug.log
+        const debug = { log, error: logError };
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add loading state styles
+            const styleElement = document.createElement('style');
+            styleElement.textContent = `
+                .loading-indicator {
+                    text-align: center;
+                    padding: 40px;
+                    color: #666;
+                    font-size: 18px;
+                    width: 100%;
+                }
+                .loading-indicator:after {
+                    content: '...';
+                    animation: dots 1.5s steps(5, end) infinite;
+                }
+                @keyframes dots {
+                    0%, 20% { content: '.'; }
+                    40% { content: '..'; }
+                    60% { content: '...'; }
+                    80%, 100% { content: ''; }
+                }
+                .error-message {
+                    text-align: center;
+                    padding: 40px;
+                    background: #fff1f0;
+                    border-radius: 8px;
+                    margin: 20px 0;
+                    width: 100%;
+                }
+                .api-status {
+                    position: fixed;
+                    bottom: 10px;
+                    right: 10px;
+                    padding: 5px 10px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    z-index: 100;
+                }
+                .api-online {
+                    background: #e6f7e6;
+                    color: #2e7d32;
+                    border: 1px solid #2e7d32;
+                }
+                .api-offline {
+                    background: #ffebee;
+                    color: #c62828;
+                    border: 1px solid #c62828;
+                }
+                
+                /* Debug panel styles */
+                #debugPanel {
+                    margin-top: 20px;
+                    padding: 15px;
+                    background: #f8f9fa;
+                    border-radius: 8px;
+                    border: 1px solid #dee2e6;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                }
+                #debugOutput {
+                    max-height: 300px;
+                    overflow-y: auto;
+                    font-family: monospace;
+                    font-size: 12px;
+                    background: #fff;
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                }
+                .debug-control-panel {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    margin-bottom: 10px;
+                }
+            `;
+            document.head.appendChild(styleElement);
+            
+            // Set up the debug panel toggle
+            const toggleDebugBtn = document.getElementById('toggleDebugBtn');
+            const debugPanel = document.getElementById('debugPanel');
+            
+            if (toggleDebugBtn && debugPanel) {
+                toggleDebugBtn.addEventListener('click', () => {
+                    const isVisible = debugPanel.style.display !== 'none';
+                    debugPanel.style.display = isVisible ? 'none' : 'block';
+                    toggleDebugBtn.innerHTML = isVisible ? 
+                        '<span>🛠️ Debug Panel</span>' : 
+                        '<span>🛠️ Hide Debug</span>';
+                });
+            }
+            
+            // Check if API is available (with timeout)
+            const statusIndicator = document.createElement('div');
+            statusIndicator.className = 'api-status api-offline';
+            statusIndicator.textContent = 'API: Checking...';
+            document.body.appendChild(statusIndicator);
+            
+            // API check with timeout
+            const apiCheckTimeout = setTimeout(() => {
+                log("API health check timed out");
+                statusIndicator.className = 'api-status api-offline';
+                statusIndicator.textContent = 'API: Offline (using fallback data)';
+            }, 3000);
+            
+            // Test API connection
+            fetch(`${API_URL}/api/health`)
+                .then(response => {
+                    clearTimeout(apiCheckTimeout);
+                    if (!response.ok) throw new Error('Health check failed');
+                    return response.json();
+                })
+                .then(data => {
+                    log("API Health check successful:", data);
+                    statusIndicator.className = 'api-status api-online';
+                    statusIndicator.textContent = `API: Online (${data.data_count || 0} internships)`;
+                    
+                    // If API is working, also test the JSON file directly
+                    fetch(`${API_URL}/api/test-json`)
+                        .then(res => res.json())
+                        .then(jsonData => {
+                            log("JSON file check successful:", jsonData);
+                            if (jsonData.success && jsonData.count > 0) {
+                                statusIndicator.textContent = `API: Online (${jsonData.count} internships)`;
+                            }
+                        })
+                        .catch(jsonErr => logError("JSON file check error:", jsonErr));
+                })
+                .catch(err => {
+                    clearTimeout(apiCheckTimeout);
+                    logError("API connection error:", err);
+                    statusIndicator.className = 'api-status api-offline';
+                    statusIndicator.textContent = 'API: Offline (using fallback data)';
+                });
+                
+            // Create default test profile if needed
+            const profileData = localStorage.getItem('candidateProfile');
+            if (!profileData) {
+                log("Creating default test profile");
+                const testProfile = {
+                    fullName: "Test User",
+                    email: "test@example.com",
+                    education: "graduate",
+                    skills: ["programming", "communication", "english"],
+                    interests: ["technology", "marketing"],
+                    location: "maharashtra"
+                };
+                localStorage.setItem('candidateProfile', JSON.stringify(testProfile));
+            } else {
+                try {
+                    const profile = JSON.parse(profileData);
+                    log("Found existing profile", profile);
+                } catch (e) {
+                    logError("Error parsing existing profile, will create new one", e);
+                    const testProfile = {
+                        fullName: "Test User",
+                        email: "test@example.com",
+                        education: "graduate",
+                        skills: ["programming", "communication", "english"],
+                        interests: ["technology", "marketing"],
+                        location: "maharashtra"
+                    };
+                    localStorage.setItem('candidateProfile', JSON.stringify(testProfile));
+                }
+            }
+            
+            // Start loading recommendations right away
+            renderRecommendations();
+        });
+    </script>
+</body>
+</html>

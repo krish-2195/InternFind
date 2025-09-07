@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile - InternFind</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-3d">
+                    <span class="logo-text">PM Internship</span>
+                    <span class="logo-subtext">AI Powered</span>
+                </div>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="#help" class="nav-link">Help</a>
+            </nav>
+        </header>
+
+        <!-- Progress Indicator -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-step active">
+                    <div class="step-number">1</div>
+                    <span>Profile</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step">
+                    <div class="step-number">2</div>
+                    <span>Recommendations</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step">
+                    <div class="step-number">3</div>
+                    <span>Details</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Form -->
+        <section class="profile-section">
+            <div class="form-container">
+                <div class="form-header">
+                    <h1 class="form-title">Tell Us About Yourself</h1>
+                    <p class="form-subtitle">Help us find the perfect internship matches for you</p>
+                </div>
+
+                <form id="profileForm" class="profile-form">
+                    <!-- Personal Information -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="label-icon">👤</span>
+                            Full Name
+                        </label>
+                        <input type="text" id="fullName" class="form-input" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span class="label-icon">📧</span>
+                                Email
+                            </label>
+                            <input type="email" id="email" class="form-input" placeholder="your.email@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <span class="label-icon">📱</span>
+                                Phone
+                            </label>
+                            <input type="tel" id="phone" class="form-input" placeholder="+91 9876543210" required>
+                        </div>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="form-section">
+                        <h3 class="section-header">🎓 Education Background</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Current Education Level</label>
+                                <select id="education" class="form-select" required>
+                                    <option value="">Select your level</option>
+                                    <option value="10th">10th Grade</option>
+                                    <option value="12th">12th Grade / Higher Secondary</option>
+                                    <option value="diploma">Diploma</option>
+                                    <option value="graduate">Graduate (B.A/B.Sc/B.Com/B.Tech)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Field of Study</label>
+                                <select id="field" class="form-select" required>
+                                    <option value="">Select your field</option>
+                                    <option value="engineering">Engineering</option>
+                                    <option value="commerce">Commerce</option>
+                                    <option value="science">Science</option>
+                                    <option value="arts">Arts/Humanities</option>
+                                    <option value="management">Management</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills & Interests -->
+                    <div class="form-section">
+                        <h3 class="section-header">💡 Skills & Interests</h3>
+                        <div class="form-group">
+                            <label class="form-label">Select your areas of interest (Choose up to 5)</label>
+                            <div class="interest-grid">
+                                <div class="interest-chip" data-value="technology">
+                                    <span class="chip-icon">💻</span>
+                                    Technology
+                                </div>
+                                <div class="interest-chip" data-value="finance">
+                                    <span class="chip-icon">💰</span>
+                                    Finance
+                                </div>
+                                <div class="interest-chip" data-value="marketing">
+                                    <span class="chip-icon">📈</span>
+                                    Marketing
+                                </div>
+                                <div class="interest-chip" data-value="healthcare">
+                                    <span class="chip-icon">🏥</span>
+                                    Healthcare
+                                </div>
+                                <div class="interest-chip" data-value="education">
+                                    <span class="chip-icon">📚</span>
+                                    Education
+                                </div>
+                                <div class="interest-chip" data-value="government">
+                                    <span class="chip-icon">🏛️</span>
+                                    Government
+                                </div>
+                                <div class="interest-chip" data-value="social">
+                                    <span class="chip-icon">🤝</span>
+                                    Social Work
+                                </div>
+                                <div class="interest-chip" data-value="media">
+                                    <span class="chip-icon">📺</span>
+                                    Media
+                                </div>
+                                <div class="interest-chip" data-value="research">
+                                    <span class="chip-icon">🔬</span>
+                                    Research
+                                </div>
+                                <div class="interest-chip" data-value="design">
+                                    <span class="chip-icon">🎨</span>
+                                    Design
+                                </div>
+                                <div class="interest-chip" data-value="manufacturing">
+                                    <span class="chip-icon">🏭</span>
+                                    Manufacturing
+                                </div>
+                                <div class="interest-chip" data-value="retail">
+                                    <span class="chip-icon">🛒</span>
+                                    Retail
+                                </div>
+                                <div class="interest-chip" data-value="logistics">
+                                    <span class="chip-icon">🚛</span>
+                                    Logistics
+                                </div>
+                                <div class="interest-chip" data-value="agriculture">
+                                    <span class="chip-icon">🌾</span>
+                                    Agriculture
+                                </div>
+                                <div class="interest-chip" data-value="automotive">
+                                    <span class="chip-icon">🚗</span>
+                                    Automotive
+                                </div>
+                                <div class="interest-chip" data-value="energy">
+                                    <span class="chip-icon">⚡</span>
+                                    Energy
+                                </div>
+                                <div class="interest-chip" data-value="construction">
+                                    <span class="chip-icon">🏗️</span>
+                                    Construction
+                                </div>
+                                <div class="interest-chip" data-value="food">
+                                    <span class="chip-icon">🍽️</span>
+                                    Food Processing
+                                </div>
+                                <div class="interest-chip" data-value="electronics">
+                                    <span class="chip-icon">🔌</span>
+                                    Electronics
+                                </div>
+                                <div class="interest-chip" data-value="entertainment">
+                                    <span class="chip-icon">🎬</span>
+                                    Entertainment
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Technical Skills</label>
+                            <div class="interest-grid">
+                                <div class="interest-chip skill-chip" data-value="computer">
+                                    Computer Skills
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="english">
+                                    English
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="programming">
+                                    Programming
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="marketing">
+                                    Marketing
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="communication">
+                                    Communication
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="data_entry">
+                                    Data Entry
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="accounting">
+                                    Accounting
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="research">
+                                    Research
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="technical">
+                                    Technical
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="design">
+                                    Design
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="quality_control">
+                                    Quality Control
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="safety">
+                                    Safety
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="teamwork">
+                                    Teamwork
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="teaching">
+                                    Teaching
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="organization">
+                                    Organization
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="sales">
+                                    Sales
+                                </div>
+                                <div class="interest-chip skill-chip" data-value="hindi">
+                                    Hindi
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Preferences -->
+                    <div class="form-section">
+                        <h3 class="section-header">📍 Location Preferences</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Preferred State</label>
+                                <select id="state" class="form-select" required>
+                                    <option value="">Select state</option>
+                                    <option value="andhra_pradesh">Andhra Pradesh</option>
+                                    <option value="bihar">Bihar</option>
+                                    <option value="delhi">Delhi</option>
+                                    <option value="gujarat">Gujarat</option>
+                                    <option value="haryana">Haryana</option>
+                                    <option value="jharkhand">Jharkhand</option>
+                                    <option value="karnataka">Karnataka</option>
+                                    <option value="kerala">Kerala</option>
+                                    <option value="madhya_pradesh">Madhya Pradesh</option>
+                                    <option value="maharashtra">Maharashtra</option>
+                                    <option value="punjab">Punjab</option>
+                                    <option value="rajasthan">Rajasthan</option>
+                                    <option value="tamil_nadu">Tamil Nadu</option>
+                                    <option value="telangana">Telangana</option>
+                                    <option value="uttar_pradesh">Uttar Pradesh</option>
+                                    <option value="west_bengal">West Bengal</option>
+                                    <option value="any">Any State</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Work Mode Preference</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="workMode" value="Remote" checked>
+                                        <span class="radio-custom"></span>
+                                        Remote
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="workMode" value="Office">
+                                        <span class="radio-custom"></span>
+                                        Office
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="workMode" value="Hybrid">
+                                        <span class="radio-custom"></span>
+                                        Hybrid
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-submit">
+                        <button type="submit" class="submit-button">
+                            <span>Get My Recommendations</span>
+                            <div class="button-loading">
+                                <div class="loading-spinner"></div>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Handle interest chip selection
+        const interestChips = document.querySelectorAll('.interest-chip:not(.skill-chip)');
+        const skillChips = document.querySelectorAll('.skill-chip');
+        const selectedInterests = new Set();
+        const selectedSkills = new Set();
+
+        interestChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                const value = chip.getAttribute('data-value');
+                
+                if (selectedInterests.has(value)) {
+                    selectedInterests.delete(value);
+                    chip.classList.remove('selected');
+                } else if (selectedInterests.size < 5) {
+                    selectedInterests.add(value);
+                    chip.classList.add('selected');
+                }
+            });
+        });
+
+        skillChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                const value = chip.getAttribute('data-value');
+                
+                if (selectedSkills.has(value)) {
+                    selectedSkills.delete(value);
+                    chip.classList.remove('selected');
+                } else if (selectedSkills.size < 8) {
+                    selectedSkills.add(value);
+                    chip.classList.add('selected');
+                }
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('profileForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const submitButton = document.querySelector('.submit-button');
+            const buttonText = submitButton.querySelector('span');
+            const loadingSpinner = submitButton.querySelector('.button-loading');
+
+            // Show loading state
+            submitButton.classList.add('loading');
+            buttonText.textContent = 'Saving Your Profile...';
+            loadingSpinner.style.display = 'block';
+
+            // Collect form data
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                education: document.getElementById('education').value,
+                field: document.getElementById('field').value,
+                state: document.getElementById('state').value,
+                workMode: document.querySelector('input[name="workMode"]:checked').value,
+                interests: Array.from(selectedInterests),
+                skills: Array.from(selectedSkills)
+            };
+
+            // Persist profile only; recommendations page will fetch from backend/internship.json or API
+            localStorage.setItem('candidateProfile', JSON.stringify(formData));
+            // Ensure any previous hardcoded matches are cleared so we always use the JSON data
+            localStorage.removeItem('matchedInternships');
+
+            // Redirect to recommendations
+            setTimeout(() => {
+                window.location.href = 'internship-recommendations.html';
+            }, 600);
+        });
+        
+        // Education level matching function
+        function checkEducationMatch(candidateEducation, requiredEducation) {
+            const educationLevels = {
+                '10th': 1,
+                '12th': 2,
+                'diploma': 3,
+                'graduate': 4
+            };
+            
+            return educationLevels[candidateEducation] >= educationLevels[requiredEducation];
+        }
+
+        // Add form animations
+        const formInputs = document.querySelectorAll('.form-input, .form-select, .form-textarea');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', () => {
+                if (!input.value) {
+                    input.parentElement.classList.remove('focused');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

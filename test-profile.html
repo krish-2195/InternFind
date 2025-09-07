@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Profile Setup</title>
+</head>
+<body>
+  <h1>Setting up test profile data...</h1>
+  
+  <script>
+    // Create a test profile
+    const testProfile = {
+      fullName: 'Test User',
+      email: 'test@example.com',
+      phone: '1234567890',
+      education: 'graduate',
+      field: 'engineering',
+      state: 'maharashtra',
+      workMode: 'Remote',
+      interests: ['technology', 'finance'],
+      skills: ['computer', 'english', 'programming']
+    };
+    
+    // Store in localStorage
+    localStorage.setItem('candidateProfile', JSON.stringify(testProfile));
+    
+    // Clear any previously matched internships
+    localStorage.removeItem('matchedInternships');
+    
+    // Redirect to recommendations page
+    setTimeout(() => {
+      alert('Test profile created! Now redirecting to recommendations page.');
+      window.location.href = 'internship-recommendations.html?test=1';
+    }, 1000);
+  </script>
+</body>
+</html>

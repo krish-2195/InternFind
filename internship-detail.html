@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Details - InternFind</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-3d">
+                    <span class="logo-text">PM Internship</span>
+                    <span class="logo-subtext">AI Powered</span>
+                </div>
+            </div>
+            <nav class="nav">
+                <a href="internship-recommendations.html" class="nav-link">← Back to Recommendations</a>
+                <a href="index.html" class="nav-link">Home</a>
+            </nav>
+        </header>
+
+        <!-- Progress Indicator -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-step completed">
+                    <div class="step-number">✓</div>
+                    <span>Profile</span>
+                </div>
+                <div class="progress-line completed"></div>
+                <div class="progress-step completed">
+                    <div class="step-number">✓</div>
+                    <span>Recommendations</span>
+                </div>
+                <div class="progress-line completed"></div>
+                <div class="progress-step active">
+                    <div class="step-number">3</div>
+                    <span>Details</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Internship Details -->
+        <section class="detail-section">
+            <div class="detail-container" id="detailContainer">
+                <!-- Content will be dynamically loaded -->
+            </div>
+        </section>
+
+        <!-- Application Modal -->
+        <div id="applicationModal" class="modal-overlay">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h3>Apply for Internship</h3>
+                    <button class="modal-close" onclick="closeApplicationModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="application-form">
+                        <div class="form-group">
+                            <label class="form-label">Why are you interested in this internship?</label>
+                            <textarea class="form-textarea" rows="4" placeholder="Share your motivation and what excites you about this opportunity..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Upload Resume (Optional)</label>
+                            <div class="file-upload">
+                                <input type="file" id="resume" accept=".pdf,.doc,.docx">
+                                <label for="resume" class="file-upload-label">
+                                    <span class="upload-icon">📄</span>
+                                    <span>Choose file or drag here</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Expected Start Date</label>
+                            <input type="date" class="form-input" id="startDate">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="secondary-button" onclick="closeApplicationModal()">Cancel</button>
+                    <button class="cta-button" onclick="submitApplication()">
+                        <span>Submit Application</span>
+                        <div class="button-3d-effect"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div id="successModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-body success-content">
+                    <div class="success-icon">✅</div>
+                    <h3>Application Submitted Successfully!</h3>
+                    <p>Your application has been sent to the organization. You'll receive updates via email and SMS.</p>
+                    <div class="success-actions">
+                        <button class="cta-button" onclick="goToRecommendations()">
+                            <span>View More Internships</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Render details from selected internship object saved by recommendations page
+    function normalizeDetail(intern) {
+        const stipend = typeof intern.stipend === 'string' && intern.stipend.includes('₹') ? intern.stipend : `₹${(intern.stipend ?? 0).toLocaleString()}/month`;
+        const location = intern.location || (intern.location_city ? `${intern.location_city}, ${intern.location_state}` : (intern.location_state || 'Remote'));
+        const requirements = Array.isArray(intern.requirements) ? intern.requirements : (Array.isArray(intern.required_skills) ? intern.required_skills : ['Not specified']);
+        const match = typeof intern.match === 'number' ? intern.match : 85;
+        const type = intern.type || intern.company_type || 'Private';
+        const duration = intern.duration || 'Flexible';
+        const description = intern.description || 'No description available';
+        return { ...intern, stipend, location, requirements, match, type, duration, description };
+    }
+    function loadInternshipDetail() {
+        let intern = null;
+        try {
+            const raw = localStorage.getItem('selectedInternshipData');
+            if (raw) intern = JSON.parse(raw);
+        } catch (e) {}
+        if (!intern) {
+            alert('No internship selected. Returning to recommendations.');
+            window.location.href = 'internship-recommendations.html';
+            return;
+        }
+        const internship = normalizeDetail(intern);
+        const container = document.getElementById('detailContainer');
+        container.innerHTML = `
+            <div class="detail-header">
+                <div class="detail-badge ${internship.type.toLowerCase()}">${internship.type}</div>
+                <div class="match-score-detail">
+                    <div class="score-circle large">
+                        <span class="score-value">${internship.match}%</span>
+                        <div class="score-label">Match</div>
+                        <div class="match-ring" style="--match: ${internship.match}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="detail-main">
+                <h1 class="detail-title">${internship.title}</h1>
+                <div class="detail-meta">
+                    <div class="meta-item"><span class="meta-icon">🏢</span><span>${internship.company}</span></div>
+                    <div class="meta-item"><span class="meta-icon">📍</span><span>${internship.location}</span>${internship.remote ? '<span class="remote-badge">Remote Available</span>' : ''}</div>
+                    <div class="meta-item"><span class="meta-icon">⏰</span><span>${internship.duration}</span></div>
+                    <div class="meta-item"><span class="meta-icon">💰</span><span>${internship.stipend}</span></div>
+                </div>
+                <div class="detail-content">
+                    <div class="content-section">
+                        <h3 class="section-title">About This Internship</h3>
+                        <p class="section-content">${internship.description}</p>
+                    </div>
+                    <div class="content-section">
+                        <h3 class="section-title">Requirements</h3>
+                        <div class="requirements-grid">${internship.requirements.map(req => `<div class="requirement-item">${req}</div>`).join('')}</div>
+                    </div>
+                    <div class="detail-footer-info">
+                        <div class="info-row">
+                            ${internship.application_deadline ? `<div class="info-item"><strong>Application Deadline:</strong><span class="deadline">${internship.application_deadline}</span></div>` : ''}
+                            ${internship.start_date ? `<div class="info-item"><strong>Expected Start Date:</strong><span>${internship.start_date}</span></div>` : ''}
+                        </div>
+                    </div>
+                </div>
+                <div class="detail-actions">
+                    <button class="secondary-button" onclick="goBack()"><span>← Back to Recommendations</span></button>
+                    <button class="cta-button apply-btn" onclick="showApplicationModal()"><span>Apply Now</span><div class="button-3d-effect"></div></button>
+                </div>
+            </div>`;
+    }
+    function showApplicationModal() { document.getElementById('applicationModal').classList.add('active'); }
+    function closeApplicationModal() { document.getElementById('applicationModal').classList.remove('active'); }
+    function submitApplication() {
+        const modal = document.getElementById('applicationModal');
+        const successModal = document.getElementById('successModal');
+        const submitBtn = modal.querySelector('.cta-button');
+        submitBtn.innerHTML = '<div class="loading-spinner"></div><span>Submitting...</span>';
+        setTimeout(() => { modal.classList.remove('active'); successModal.classList.add('active'); }, 2000);
+    }
+    function goBack() { window.location.href = 'internship-recommendations.html'; }
+    function goToRecommendations() { document.getElementById('successModal').classList.remove('active'); window.location.href = 'internship-recommendations.html'; }
+    document.addEventListener('DOMContentLoaded', loadInternshipDetail);
+    </script>

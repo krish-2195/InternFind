@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InternFind - AI Recommendations</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-3d">
+                    <span class="logo-text">InternFind</span>
+                    <span class="logo-subtext">AI Powered</span>
+                </div>
+            </div>
+            <nav class="nav">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-3d-bg">
+                    <div class="floating-shape shape-1"></div>
+                    <div class="floating-shape shape-2"></div>
+                    <div class="floating-shape shape-3"></div>
+                </div>
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        Find Your Perfect
+                        <span class="gradient-text">Internship</span>
+                    </h1>
+                    <p class="hero-description">
+                        Our AI-powered recommendation engine matches you with the most suitable internships based on your skills, interests, and aspirations. Join thousands of successful interns across India.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <div class="stat-number">10,000+</div>
+                            <div class="stat-label">Active Internships</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">50,000+</div>
+                            <div class="stat-label">Successful Placements</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">500+</div>
+                            <div class="stat-label">Partner Organizations</div>
+                        </div>
+                    </div>
+                    <button class="cta-button" onclick="startJourney()">
+                        <span>Start Your Journey</span>
+                        <div class="button-3d-effect"></div>
+                    </button>
+                </div>
+                <div class="hero-visual">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="app-preview">
+                                <div class="preview-header"></div>
+                                <div class="preview-content">
+                                    <div class="preview-card"></div>
+                                    <div class="preview-card"></div>
+                                    <div class="preview-card"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <h2 class="section-title">Why Choose Our AI Recommendations?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Personalized Matching</h3>
+                    <p>Our AI analyzes your profile to find internships that perfectly match your skills and aspirations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Access recommendations anywhere, anytime. Designed for users with varying levels of digital literacy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Pan-India Coverage</h3>
+                    <p>From metro cities to remote villages, find opportunities across all states and territories.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Results</h3>
+                    <p>Get your top 5 recommendations in seconds, not hours. Simple and fast decision making.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Ready to Find Your Dream Internship?</h2>
+                <p>Join thousands of students who have found their perfect internship match</p>
+                <button class="cta-button secondary" onclick="startJourney()">
+                    <span>Get Started Now</span>
+                    <div class="button-3d-effect"></div>
+                </button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>InternFind</h4>
+                    <p>Empowering India's youth through meaningful internship opportunities.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 InternFind. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function startJourney() {
+            window.location.href = 'candidate-profile.html';
+        }
+
+        // Add scroll animations
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.hero-3d-bg');
+            const speed = scrolled * 0.5;
+            if (parallax) {
+                parallax.style.transform = `translateY(${speed}px)`;
+            }
+        });
+
+        // Animate features on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.feature-card').forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
