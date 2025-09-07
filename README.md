@@ -6,6 +6,12 @@
 [![Flask](https://img.shields.io/badge/Flask-000000?style=flat&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://typescriptlang.org/)
 
+## 🌐 Live Demo
+
+**🚀 [Visit InternFind Live](https://internfind.onrender.com)**
+
+Experience the full AI-powered internship recommendation platform in action!
+
 **InternFind** is a modern, full-stack web application that provides AI-powered internship recommendations based on candidate skills, experience, and preferences. Built with React, TypeScript, Python Flask, and Tailwind CSS.
 
 > **⚠️ PROPRIETARY SOFTWARE**: This is a commercial project developed by Karan Patel. The code is shared for portfolio and demonstration purposes only. All rights reserved.
@@ -41,6 +47,16 @@
 - Node.js (v16 or higher)
 - Python 3.8+
 - Git
+
+## 🚀 Quick Start
+
+### 🌐 Try the Live Demo
+**[Visit InternFind Live →](https://internfind.onrender.com)**
+- No installation required
+- Full functionality available
+- Mobile and desktop optimized
+
+### 💻 Local Development Setup
 
 ### Installation
 
@@ -112,6 +128,8 @@ internfind/
 ## 🤝 Business Inquiries
 
 **InternFind** is available for licensing and commercial partnerships. 
+
+**🌐 Live Demo**: [https://internfind.onrender.com](https://internfind.onrender.com)
 
 For business inquiries, licensing opportunities, or custom implementations:
 - 📧 **Project Lead**: Krish Patel - [krishvp27@gmail.com]
