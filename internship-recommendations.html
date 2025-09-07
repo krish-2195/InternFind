@@ -1165,25 +1165,6 @@
                     margin: 20px 0;
                     width: 100%;
                 }
-                .api-status {
-                    position: fixed;
-                    bottom: 10px;
-                    right: 10px;
-                    padding: 5px 10px;
-                    border-radius: 4px;
-                    font-size: 12px;
-                    z-index: 100;
-                }
-                .api-online {
-                    background: #e6f7e6;
-                    color: #2e7d32;
-                    border: 1px solid #2e7d32;
-                }
-                .api-offline {
-                    background: #ffebee;
-                    color: #c62828;
-                    border: 1px solid #c62828;
-                }
                 
                 /* Debug panel styles */
                 #debugPanel {
@@ -1226,49 +1207,6 @@
                         '<span>🛠️ Hide Debug</span>';
                 });
             }
-            
-            // Check if API is available (with timeout)
-            const statusIndicator = document.createElement('div');
-            statusIndicator.className = 'api-status api-offline';
-            statusIndicator.textContent = 'API: Checking...';
-            document.body.appendChild(statusIndicator);
-            
-            // API check with timeout
-            const apiCheckTimeout = setTimeout(() => {
-                log("API health check timed out");
-                statusIndicator.className = 'api-status api-offline';
-                statusIndicator.textContent = 'API: Offline (using fallback data)';
-            }, 3000);
-            
-            // Test API connection
-            fetch(`${API_URL}/api/health`)
-                .then(response => {
-                    clearTimeout(apiCheckTimeout);
-                    if (!response.ok) throw new Error('Health check failed');
-                    return response.json();
-                })
-                .then(data => {
-                    log("API Health check successful:", data);
-                    statusIndicator.className = 'api-status api-online';
-                    statusIndicator.textContent = `API: Online (${data.data_count || 0} internships)`;
-                    
-                    // If API is working, also test the JSON file directly
-                    fetch(`${API_URL}/api/test-json`)
-                        .then(res => res.json())
-                        .then(jsonData => {
-                            log("JSON file check successful:", jsonData);
-                            if (jsonData.success && jsonData.count > 0) {
-                                statusIndicator.textContent = `API: Online (${jsonData.count} internships)`;
-                            }
-                        })
-                        .catch(jsonErr => logError("JSON file check error:", jsonErr));
-                })
-                .catch(err => {
-                    clearTimeout(apiCheckTimeout);
-                    logError("API connection error:", err);
-                    statusIndicator.className = 'api-status api-offline';
-                    statusIndicator.textContent = 'API: Offline (using fallback data)';
-                });
                 
             // Create default test profile if needed
             const profileData = localStorage.getItem('candidateProfile');
