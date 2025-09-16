@@ -134,7 +134,7 @@ internfind/
 **🌐 Live Demo**: [https://internfind.onrender.com](https://internfind.onrender.com)
 
 For business inquiries, licensing opportunities, or custom implementations:
-- 📧 **Project Lead**: Krish Patel - [krishvp27@gmail.com]
+- 📧 **Project Lead**: Krish Patel - [ptlkrish.19@gmail.com]
 - 📧 **Technical Lead**: Karan Patel - [karanhpatel167@gmail.com]
 - 💼 **LinkedIn**: [Team LinkedIn Profiles]
 - 🌐 **Portfolio**: [Team Portfolio Website]
@@ -152,6 +152,7 @@ This project is proprietary software owned by the InternFind Development Team. S
 
 ### 🚀 **Project Leadership**
 - **Krish Patel** - *Project Lead & Backend Developer*
+  - GitHub: [@krish-2195](https://github.com/krish-2195)
   - Role: Project architecture, team coordination, AI recommendation engine
 
 ### 💻 **Frontend Development**  
